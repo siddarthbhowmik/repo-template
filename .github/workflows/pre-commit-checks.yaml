@@ -1,0 +1,46 @@
+name: 'pre-commit checks'
+
+on:
+  pull_request:
+    branches:
+      - "main"
+
+  workflow_dispatch:
+
+jobs:
+  pre_commit_scan:
+    runs-on: ubuntu-latest
+    name: pre-commit scan
+
+    steps:
+    - name: 'Step 1 - Git Checkout'
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: 'Step 2 - Python Setup'
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: 'Step 3 - Setup Terraform Lint'
+      uses: supplypike/setup-bin@v3
+      with:
+        uri: 'https://github.com/terraform-linters/tflint/releases/download/v0.47.0/tflint_darwin_amd64.zip'
+        name: 'tflint'
+        version: 'v0.47.0'
+    
+    - name: 'Step 4 - pre-commit scan'
+      id: Lint
+      uses: pre-commit/actions@3.0.0
+      with:
+        extra_args: --from-ref origin/main --to-ref ${{ github.sha }} --verbose
+      continue-on-error: true
+
+    - name: 'Step 5 - Changed files'
+      run: |
+        git --no-pager diff --ws-error-highlight=all --color
+
+    - name: 'Step 6 - pre-commit check status'
+      if: steps.lint.outcome == 'failure'
+      run: exit 1
