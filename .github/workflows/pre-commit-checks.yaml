@@ -32,7 +32,7 @@ jobs:
     
     - name: 'Step 4 - pre-commit scan'
       id: Lint
-      uses: pre-commit/action@3.0.0
+      uses: pre-commit/action@v3.0.0
       with:
         extra_args: --from-ref origin/main --to-ref ${{ github.sha }} --verbose
       continue-on-error: true
