@@ -29,7 +29,7 @@ jobs:
         uri: 'https://github.com/terraform-linters/tflint/releases/download/v0.47.0/tflint_darwin_amd64.zip'
         name: 'tflint'
         version: 'v0.47.0'
-    
+
     - name: 'Step 4 - pre-commit scan'
       id: Lint
       uses: pre-commit/action@v3.0.0
